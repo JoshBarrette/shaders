@@ -2,9 +2,12 @@
 precision mediump float;
 #endif
 
+uniform sampler2D u_Texture;
 uniform vec2 u_resolution;
 uniform vec2 u_mouse;
 uniform float u_time;
+
+varying vec2 v_Uv;
 
 float plot(vec2 st, float y) {
     return step(y - 0.005, st.y) -
@@ -27,6 +30,7 @@ float plot_circle_2(vec2 st, float radius) {
 
 float plot_filled_rect(vec2 st, vec2 size) {
     size = 0.25 - (size * 0.25);
+    st.x = st.x - 0.25;
     vec2 uv = step(size, st * (1.0 - st));
 
     return uv.x * uv.y;
@@ -35,18 +39,17 @@ float plot_filled_rect(vec2 st, vec2 size) {
 void main() {
     vec2 st = gl_FragCoord.xy / u_resolution;
 
-    float y = abs((st.x * 2.0) - 1.0);
+    vec4 pic = texture2D(u_Texture, v_Uv);
+    vec4 color;
+    if(pic.a <= 0.1) {
+        color = vec4(0.0);
+    } else {
+        color = mix(vec4(vec3(0.0), 1.0), pic, 1.0 + (st.y * -1.0));
+    }
 
-    vec3 color = vec3(st.y);
-
-    // float pct = plot(st, y);
-    // float pct = plot_circle(st, 0.2);
-    // float pct = plot_circle_2(st, 0.2);
     float pct = plot_filled_rect(st, vec2(0.05, 0.5));
-    color = mix(color, vec3(1.0, 0.0, 0.0), pct);
+    color = mix(color, vec4(1.0, 0.0, 0.0, 1.0), pct);
     pct = plot_filled_rect(st, vec2(0.02, 0.2));
-    color = mix(color, vec3(0.0, 1.0, 0.0), pct);
-    // color = (1.0 - pct) * color + pct * vec3(0.0, 1.0, 0.0);
-    // color = mix(color, vec3(1.0, 0.0, 0.0), pct);
-    gl_FragColor = vec4(color, 1.0);
+    color = mix(color, vec4(0.0, 1.0, 0.0, 1.0), pct);
+    gl_FragColor = color;
 }

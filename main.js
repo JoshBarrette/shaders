@@ -34,7 +34,10 @@ async function init() {
 
   var geometry = new THREE.PlaneGeometry(2, 2);
 
+  const texture = new THREE.TextureLoader().load("male-technologist.png");
+  // const texture = new THREE.Texture();
   uniforms = {
+    u_Texture: { value: texture },
     u_time: { type: "f", value: 1.0 },
     u_resolution: { type: "v2", value: new THREE.Vector2() },
     u_mouse: { type: "v2", value: new THREE.Vector2() },
