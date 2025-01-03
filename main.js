@@ -11,7 +11,13 @@ async function run() {
   animate();
 }
 
-async function readShader() {
+async function readVertShader() {
+  const response = await fetch("./shader.vert");
+  const text = await response.text();
+  return text;
+}
+
+async function readFragShader() {
   const response = await fetch("./shader.frag");
   const text = await response.text();
   return text;
@@ -36,8 +42,8 @@ async function init() {
 
   var material = new THREE.ShaderMaterial({
     uniforms: uniforms,
-    vertexShader: document.getElementById("vertexShader").textContent,
-    fragmentShader: await readShader(),
+    vertexShader: await readVertShader(),
+    fragmentShader: await readFragShader(),
   });
 
   var mesh = new THREE.Mesh(geometry, material);

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -9,20 +9,27 @@
       }
     </style>
   </head>
+
   <body>
     <div id="container"></div>
     <script id="vertexShader" type="x-shader/x-vertex">
+      out vec4 test_vec;
+
       void main() {
-          gl_Position = vec4( position, 1.0 );
+          test_vec = vec4(0.0, 1.0, 0.0, 1.0);
+          gl_Position = vec4( position, 1.0 ); // NEEDED
       }
     </script>
     <script id="fragmentShader" type="x-shader/x-fragment">
+      in vec4 test_vec;
+
       uniform vec2 u_resolution;
       uniform float u_time;
 
       void main() {
           vec2 st = gl_FragCoord.xy/u_resolution.xy;
           gl_FragColor=vec4(st.x,st.y,0.0,1.0);
+          gl_FragColor=text_vec;
       }
     </script>
     <script type="module" src="/main.js"></script>
